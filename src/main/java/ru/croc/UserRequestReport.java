@@ -24,11 +24,11 @@ import java.util.List;
 
 public class UserRequestReport {
 
-    private final static String FILE_PATH = "src/main/resources/"
+    private final static String FILE_PATH = "src/requests/"
             + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm-MM")) + " Requests.xlsx";
 
     // названия столбцов
-    private final static List<String> HEADINGS = new ArrayList<>(List.of(
+    private final static List<String> HEADINGS = List.of(
             "№ п/п",
             "№ обращения",
             "Тип заявителя",
@@ -42,7 +42,7 @@ public class UserRequestReport {
             "Время направления ответа",
             "Краткое наименование КО",
             "Номер КО по КГРКО",
-            "Статус"));
+            "Статус");
 
     public static void main(String[] args) {
 
@@ -95,16 +95,14 @@ public class UserRequestReport {
             }
             headerRow.getCell(0).setCellStyle(style);
             headerRow.getCell(0).setCellValue("Перечень обращений за период");
-
             sheet.addMergedRegion(new CellRangeAddress(row++,0,0, HEADINGS.size() - 1));
 
-            var requestFieldRow = sheet.createRow(row++);
-            requestFieldRow.setHeightInPoints(40);
-
+            var requestFieldsRow = sheet.createRow(row++);
+            requestFieldsRow.setHeightInPoints(40);
             // заголовки
             int col = 0;
             for (var header : HEADINGS) {
-                var cell = requestFieldRow.createCell(col);
+                var cell = requestFieldsRow.createCell(col);
                 cell.setCellValue(header);
                 cell.setCellStyle(style);
                 col++;
@@ -114,7 +112,7 @@ public class UserRequestReport {
             long id = 1;
             for (var line : data) {
                 var rowWithData = sheet.createRow(row);
-                rowWithData.createCell(0).setCellValue(id++);
+                rowWithData.createCell(0).setCellValue(id++); // номер записи
                 for (col = 1; col < HEADINGS.size(); col++) {
                     rowWithData.createCell(col);
                     rowWithData.getCell(col).setCellValue(line.get(col));
