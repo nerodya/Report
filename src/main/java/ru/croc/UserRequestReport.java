@@ -15,6 +15,7 @@ import java.io.FileReader;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class UserRequestReport {
@@ -87,38 +88,21 @@ public class UserRequestReport {
                 cell.setCellStyle(style);
             }
 
+            var styleCell = workbook.createCellStyle();
+            styleCell.setBorderTop(BorderStyle.THIN);
+            styleCell.setBorderBottom(BorderStyle.THIN);
+            styleCell.setBorderLeft(BorderStyle.THIN);
+            styleCell.setBorderRight(BorderStyle.THIN);
             // ФОРМИРОВАНИЕ СТРОК ДАННЫХ
             var id = 1;
             for (var line : data) {
-                var rowWithData = sheet.createRow(row);
+                var rowWithData = sheet.createRow(row++);
                 rowWithData.createCell(RequestColumn.NUMBER.getNumberColumn()).setCellValue(id++);
-                rowWithData.createCell(RequestColumn.NUMBER_APPEAL.getNumberColumn())
-                        .setCellValue(line[RequestColumn.NUMBER_APPEAL.getNumberColumn()]);
-                rowWithData.createCell(RequestColumn.TYPE_APPLICANT.getNumberColumn())
-                        .setCellValue(line[RequestColumn.TYPE_APPLICANT.getNumberColumn()]);
-                rowWithData.createCell(RequestColumn.SURNAME.getNumberColumn())
-                        .setCellValue(line[RequestColumn.SURNAME.getNumberColumn()]);
-                rowWithData.createCell(RequestColumn.NAME.getNumberColumn())
-                        .setCellValue(line[RequestColumn.NAME.getNumberColumn()]);
-                rowWithData.createCell(RequestColumn.PATRONYMIC.getNumberColumn())
-                        .setCellValue(line[RequestColumn.PATRONYMIC.getNumberColumn()]);
-                rowWithData.createCell(RequestColumn.SERVICE.getNumberColumn())
-                        .setCellValue(line[RequestColumn.SERVICE.getNumberColumn()]);
-                rowWithData.createCell(RequestColumn.DATE_RECEIPT_REQUEST.getNumberColumn())
-                        .setCellValue(line[RequestColumn.DATE_RECEIPT_REQUEST.getNumberColumn()]);
-                rowWithData.createCell(RequestColumn.TIME_RECEIPT_REQUEST.getNumberColumn())
-                        .setCellValue(line[RequestColumn.TIME_RECEIPT_REQUEST.getNumberColumn()]);
-                rowWithData.createCell(RequestColumn.DATE_SENDING_RESPONSE.getNumberColumn())
-                        .setCellValue(line[RequestColumn.DATE_SENDING_RESPONSE.getNumberColumn()]);
-                rowWithData.createCell(RequestColumn.TINE_SENDING_RESPONSE.getNumberColumn())
-                        .setCellValue(line[RequestColumn.TINE_SENDING_RESPONSE.getNumberColumn()]);
-                rowWithData.createCell(RequestColumn.NAME_CO.getNumberColumn())
-                        .setCellValue(line[RequestColumn.NAME_CO.getNumberColumn()]);
-                rowWithData.createCell(RequestColumn.NUMBER_CODE_KGRKO.getNumberColumn())
-                        .setCellValue(line[RequestColumn.NUMBER_CODE_KGRKO.getNumberColumn()]);
-                rowWithData.createCell(RequestColumn.STATUS.getNumberColumn())
-                        .setCellValue(line[RequestColumn.STATUS.getNumberColumn()]);
-                row++;
+                Arrays.stream(RequestColumn.values()).filter(x -> x.getNumberColumn() != 0).forEach(x -> {
+                    var cell = rowWithData.createCell(x.getNumberColumn());
+                    cell.setCellValue(line[x.getNumberColumn()]);
+                    cell.setCellStyle(styleCell);
+                });
             }
 
             workbook.write(outputStream);
